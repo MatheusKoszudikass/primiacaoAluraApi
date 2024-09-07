@@ -29,7 +29,7 @@ app.post('/usuarios', async (req, res) => {
     }
 });
 
-app.get('/usuarios', async (req, res) => {
+app.get('/', async (req, res) => {
     const query = 'SELECT * FROM usuarios';
 
     try {
