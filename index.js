@@ -21,7 +21,7 @@ const limiter = rateLimit({
 
 const limiterGet = rateLimit({
     windowMs: 1 * 60 * 1000, 
-    max: 5, 
+    max: 20, 
     message: 'Muita requisição, tente novamente daqui a 1 minutos',
 })
 
