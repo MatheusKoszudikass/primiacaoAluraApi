@@ -1,36 +1,47 @@
 import express from 'express';
 import db from './Data/DbContext.js';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
-const port = process.env.PORT || 3000; 
+const port = process.env.PORT || 3000;
 
-app.use(express.json()); 
 
-// app.use(cors({
-//     origin: 'https://premiacao-alura.vercel.app', // Domínio permitido
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],    // Métodos HTTP permitidos
-//     allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
-//   }));
+app.use(cors());
 
-  app.use(cors());
+// Middleware para parsing de JSON
+app.use(express.json());
+
+// Configuração do limite de taxa
+const limiter = rateLimit({
+    windowMs: 5 * 60 * 1000, // 5 minutos
+    max: 5, // Limita a 5 requisições por IP por janela de tempo
+    message: 'Muitos pedidos, tente novamente daqui a 5 minutos',
+});
+
+const limiterGet = rateLimit({
+    windowMs: 1 * 60 * 1000, 
+    max: 5, 
+    message: 'Muita requisição, tente novamente daqui a 1 minutos',
+})
+
+// Aplica o limite de taxa apenas para a rota de adição de usuários
+app.use('/voto', limiter);
+
+app.use('/', limiterGet);
 
 // Rotas
-app.post('/usuarios', async (req, res) => {
-    const { nome, alegre, intermediario, triste, descricao } = req.body;
-
-    if (nome === undefined || alegre === undefined || intermediario === undefined || triste === undefined || descricao === andefined) {
-        return res.status(400).json({ error: 'Todos os campos são necessários: nome, alegre, intermediario, triste' });
-    }
+app.post('/voto', async (req, res) => {
+    const { bom, intermediario, ruim } = req.body;
 
     const query = `
-        INSERT INTO usuarios (nome, alegre, intermediario, triste, descricao)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO voto (bom, intermediario, ruim)
+        VALUES ($1, $2, $3)
         RETURNING *;
     `;
 
     try {
-        const result = await db.one(query, [nome, alegre, intermediario, triste]);
+        const result = await db.one(query, [ bom || null, intermediario || null, ruim || null ]);
         res.status(201).json({ message: 'Usuário criado com sucesso!', user: result });
     } catch (error) {
         console.error('Erro ao criar o usuário:', error);
@@ -39,7 +50,7 @@ app.post('/usuarios', async (req, res) => {
 });
 
 app.get('/', async (req, res) => {
-    const query = 'SELECT * FROM usuarios';
+    const query = 'SELECT * FROM voto';
 
     try {
         const result = await db.any(query);
@@ -54,10 +65,5 @@ app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); 
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    next();
-  });
+
   
