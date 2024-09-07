@@ -1,11 +1,19 @@
 import express from 'express';
 import db from './Data/DbContext.js';
+import cors from 'cors';
 
 const app = express();
 const port = process.env.PORT || 3000; 
 
 app.use(express.json()); 
 
+// app.use(cors({
+//     origin: 'https://premiacao-alura.vercel.app', // Domínio permitido
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'],    // Métodos HTTP permitidos
+//     allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
+//   }));
+
+  app.use(cors());
 
 // Rotas
 app.post('/usuarios', async (req, res) => {
