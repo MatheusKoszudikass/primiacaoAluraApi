@@ -6,6 +6,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json()); // Middleware para parsing JSON
 
+
 // Rotas
 app.post('/usuarios', async (req, res) => {
     const { nome, alegre, intermediario, triste, descricao } = req.body;
