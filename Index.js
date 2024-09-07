@@ -2,20 +2,20 @@ import express from 'express';
 import db from './Data/DbContext.js';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; 
 
 app.use(express.json()); // Middleware para parsing JSON
 
 // Rotas
 app.post('/usuarios', async (req, res) => {
-    const { nome, alegre, intermediario, triste } = req.body;
+    const { nome, alegre, intermediario, triste, descricao } = req.body;
 
-    if (nome === undefined || alegre === undefined || intermediario === undefined || triste === undefined) {
+    if (nome === undefined || alegre === undefined || intermediario === undefined || triste === undefined || descricao === andefined) {
         return res.status(400).json({ error: 'Todos os campos são necessários: nome, alegre, intermediario, triste' });
     }
 
     const query = `
-        INSERT INTO usuarios (nome, alegre, intermediario, triste)
+        INSERT INTO usuarios (nome, alegre, intermediario, triste, descricao)
         VALUES ($1, $2, $3, $4)
         RETURNING *;
     `;

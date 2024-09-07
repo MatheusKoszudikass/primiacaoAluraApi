@@ -1,11 +1,12 @@
-// db.js
 import pgPromise from 'pg-promise';
+import dotenv from 'dotenv';
 
-// Inicialize o pg-promise
+// Carrega as variáveis de ambiente do arquivo .env
+dotenv.config();
+
 const pgp = pgPromise();
 
-// Configuração de conexão
-const db = pgp("postgres://default:g9QKmrpoy6eW@ep-curly-river-a427owrn.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require");
+// Usa a variável de ambiente para configurar a conexão
+const db = pgp(process.env.POSTGRES_URL);
 
-// Exportar a instância db
 export default db;
