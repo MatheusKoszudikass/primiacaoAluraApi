@@ -4,7 +4,7 @@ import db from './Data/DbContext.js';
 const app = express();
 const port = process.env.PORT || 3000; 
 
-app.use(express.json()); // Middleware para parsing JSON
+app.use(express.json()); 
 
 
 // Rotas
@@ -45,3 +45,11 @@ app.get('/', async (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); 
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    next();
+  });
+  
